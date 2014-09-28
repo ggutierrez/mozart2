@@ -26,6 +26,7 @@
 #define MOZART_REIFIEDSPACE_H
 
 #include "mozartcore.hh"
+#include <iostream>
 
 #ifndef MOZART_GENERATOR
 
@@ -125,14 +126,21 @@ UnstableNode ReifiedSpace::askSpace(RichNode self, VM vm) {
 
   Space* space = getSpace();
 
+  std::cerr << "Impl(Space.ask) on " << space << std::endl;
+  space->dumpStabilityInf();
+  
   if (!space->isAdmissible(vm))
     raise(vm, vm->coreatoms.spaceAdmissible, self);
 
   RichNode statusVar = *space->getStatusVar();
 
+  std::cerr << "Impl(Space.ask) statusVar transient? "
+            << statusVar.isTransient() << std::endl;
   if (matchesTuple(vm, statusVar, vm->coreatoms.succeeded, wildcard())) {
+    std::cerr << "Impl(Space.ask) will return succeeded" << std::endl;
     return Atom::build(vm, vm->coreatoms.succeeded);
   } else {
+    std::cerr << "Impl(Space.ask) will return somethingelse" << std::endl;
     return { vm, statusVar };
   }
 }

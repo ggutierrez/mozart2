@@ -266,6 +266,8 @@ int main(int argc, char** argv) {
   fs::path appPath = executablePath.parent_path();
   bool isBuildSetting = appPath.string().find("emulator") != std::string::npos;  
 
+  std::cout << "Build setting detected? " << isBuildSetting << std::endl
+            << "appPath: " << appPath.string() << std::endl;
   if (ozHome.empty()) {
     if (isBuildSetting)
       ozHome = appPath.parent_path().parent_path();

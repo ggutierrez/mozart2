@@ -54,7 +54,11 @@ add_custom_target(gensources
 
 # Build the library
 
+FILE(GLOB_RECURSE MOZARTVM_HDRS "*.hh")
+
 add_library(mozartvm emulate.cc memmanager.cc gcollect.cc
   unify.cc sclone.cc vm.cc coredatatypes.cc coders.cc properties.cc
-  coremodules.cc unpickler.cc serializer.cc pickler.cc)
+  coremodules.cc unpickler.cc serializer.cc pickler.cc
+  ${MOZARTVM_HDRS}
+)
 add_dependencies(mozartvm gensources)
