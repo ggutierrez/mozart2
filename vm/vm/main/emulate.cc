@@ -1645,7 +1645,9 @@ void Thread::terminate() {
 }
 
 void Thread::dump() {
+  Space* homeSpace = getSpace();
   std::cerr << "Thread " << this << ", runnable:" << isRunnable() << std::endl;
+  homeSpace->dumpStabilityInf();
 //  UnstableNode stackTrace = stack.buildStackTrace(vm, nullptr, nullptr, DebugEntry());
 //  std::cerr << repr(vm, stackTrace) << std::endl;
 }

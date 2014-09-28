@@ -27,6 +27,12 @@
 
 #include "../mozartcore.hh"
 
+// Temporal include to use getpid()
+#include <unistd.h>
+// Temporal include to debug with gdb
+#include <chrono>
+#include <thread>
+
 #ifndef MOZART_GENERATOR
 
 namespace mozart {
@@ -46,6 +52,14 @@ public:
     New(): Builtin("new") {}
 
     static void call(VM vm, In target, Out result) {
+      // Print the process identifier and sleep for some time while the
+      // debugger catches the process.
+      std::cerr << "Current process identifier: " << getpid() << std::endl;
+      std::chrono::seconds delay(15);
+      std::cerr << "Will wait for gdb and resume in: " << delay.count() << "seconds\n";
+      std::this_thread::sleep_for(delay);
+      std::cerr << "resuming..." << std::endl;
+      
       // Create the space
       Space* space = new (vm) Space(vm, vm->getCurrentSpace());
       
@@ -53,6 +67,7 @@ public:
 
       // Create the thread {Proc Root}
       ozcalls::asyncOzCall(vm, space, target, *space->getRootVar());
+      space->dumpStabilityInf();
       
       std::cerr << "Impl(Space.new) finished\n";
       

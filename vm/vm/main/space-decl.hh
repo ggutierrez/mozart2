@@ -251,7 +251,8 @@ public:
 
   inline
   bool isBlocked();
-private:
+//private:
+public:
   inline
   void incThreadCount(int n = 1);
 
@@ -260,6 +261,9 @@ private:
 
   inline
   int getThreadCount();
+  
+  inline
+  int getCascadedRunnableThreadCount();
 
   inline
   void incRunnableThreadCount();
@@ -273,6 +277,9 @@ private:
   inline
   void checkStability();
 
+  inline
+  void dumpStabilityInf();
+  
 // Reference
 
 private:

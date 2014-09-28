@@ -57,19 +57,28 @@ namespace internal {
   public:
     DummyThread(VM vm, Space* space,
                 bool createSuspended = false): Runnable(vm, space) {
+      std::cerr << "Impl(DummyThread) constructor " << this << std::endl;
+      space->dumpStabilityInf();
       if (!createSuspended)
         resume();
+      std::cerr << "Impl(DummyThread) constructor-end " << this << std::endl;
     }
 
     DummyThread(GR gr, DummyThread& from): Runnable(gr, from) {}
 
     void run() {
+      std::cerr << "Impl(DummyThread) run() " << this << std::endl;
       terminate();
+      getSpace()->dumpStabilityInf();
+      std::cerr << "Impl(DummyThread) run()--end " << std::endl;
+      
     }
 
     void resume(bool skipSchedule = false) {
       if (!isRunnable() && !isTerminated())
         Super::resume(skipSchedule);
+      getSpace()->dumpStabilityInf();
+      std::cerr << "Impl(DummyThread) resume()--end " << std::endl;
     }
 
     void suspend(bool skipUnschedule = false) {
@@ -307,6 +316,7 @@ void Space::clearStatusVar(VM vm) {
 }
 
 void Space::bindStatusVar(VM vm, RichNode value) {
+  std::cerr << "Impl(bindStatusVar(RN)" << std::endl;
   RichNode statusVar = *getStatusVar();
   assert(statusVar.isTransient());
   DataflowVariable(statusVar).bind(vm, value);
@@ -427,6 +437,12 @@ int Space::getThreadCount() {
   return threadCount;
 }
 
+  int Space::getCascadedRunnableThreadCount() {
+    assert(!isFailed() && threadCount >= 0);
+    return cascadedRunnableThreadCount;
+  }
+
+
 void Space::incRunnableThreadCount() {
   if (!isTopLevel()) {
     if (cascadedRunnableThreadCount++ == 0)
@@ -479,6 +495,13 @@ void Space::checkStability() {
     }
   }
 }
+  
+  void Space::dumpStabilityInf() {
+    std::cerr << "Space " << this << std::endl
+      << "\tRunableThreads? " << hasRunnableThreads()
+      << ", ThreadCount: " << getThreadCount()
+      << ", CascadedTC: " << getCascadedRunnableThreadCount() << std::endl;
+  }
 
 // Installation and deinstallation
 

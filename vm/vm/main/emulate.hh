@@ -198,10 +198,16 @@ private:
   static Thread* _debugThread;
 public:
   static void setDebugThread(Thread* thr) { _debugThread = thr; }
-  static void debugIfSameAs(Thread* thr, const char* prepend) {
-    if(thr == _debugThread) {
-      std::cerr << prepend << std::endl;
-      thr->dump();
+  void debugIfIsDebugThread(bool end) {
+    if(this == _debugThread) {
+      if(!end) {
+        std::cerr << "------------------------\n";
+        std::cerr << "Before execution" << std::endl;
+      }
+      dump();
+      if (end) {
+        std::cerr << "------------------------\n";
+      }
     }
   }
 private:
