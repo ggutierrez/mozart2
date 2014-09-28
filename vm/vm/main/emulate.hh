@@ -198,8 +198,9 @@ private:
   static Thread* _debugThread;
 public:
   static void setDebugThread(Thread* thr) { _debugThread = thr; }
+  bool amIDebugThread() { return this == _debugThread; }
   void debugIfIsDebugThread(bool end) {
-    if(this == _debugThread) {
+    if(amIDebugThread()) {
       if(!end) {
         std::cerr << "------------------------\n";
         std::cerr << "Before execution" << std::endl;

@@ -311,6 +311,9 @@ Thread::Thread(GR gr, Thread& from): Runnable(gr, from) {
 void Thread::run() {
   // Local variable cache of fields
 
+  if (amIDebugThread()) {
+    std::cerr << "Thread(impl) run when I am debugThread" << std::endl;
+  }
   VM const vm = this->vm;
   XRegArray* const xregs = &this->xregs;
 

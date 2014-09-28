@@ -75,6 +75,7 @@ namespace internal {
     }
 
     void resume(bool skipSchedule = false) {
+      std::cerr << "Impl(DummyThread) resume() " << std::endl;
       if (!isRunnable() && !isTerminated())
         Super::resume(skipSchedule);
       getSpace()->dumpStabilityInf();
@@ -380,10 +381,17 @@ void Space::restoreAfterGR() {
 // Stability detection
 
 void Space::notifyThreadCreated() {
+//  std::cerr << "Space(impl) notifyThreadCreated " << this << std::endl;
+//  dumpStabilityInf();
   incThreadCount();
+//  std::cerr << "Space(impl) notifyThreadCreated--end " << this << std::endl;
+//  dumpStabilityInf();
 }
 
 void Space::notifyThreadTerminated() {
+//  std::cerr << "Space(impl) notifyThreadTerminated " << this << std::endl;
+//  dumpStabilityInf();
+
   if (isTopLevel())
     return;
 
@@ -392,6 +400,9 @@ void Space::notifyThreadTerminated() {
     getParent()->decRunnableThreadCount();
 
   checkStability();
+  
+//  std::cerr << "Space(impl) notifyThreadTerminated " << this << std::endl;
+//  dumpStabilityInf();
 }
 
 void Space::notifyThreadResumed() {
@@ -453,9 +464,10 @@ void Space::incRunnableThreadCount() {
 void Space::decRunnableThreadCount() {
   if (!isTopLevel()) {
     if (--cascadedRunnableThreadCount == 0) {
-      if (isStable())
+      if (isStable()) {
+        std::cerr << "Space(impl) decRunnableThreadCount" << std::endl;
         new (vm) internal::DummyThread(vm, this);
-
+      }
       getParent()->decRunnableThreadCount();
     }
   }
@@ -614,8 +626,10 @@ void Space::createPropagateThreadOnceAndSuspendItOnVar(
   VM vm, Runnable*& propagateThread, RichNode variable) {
 
   if (variable.isTransient()) {
-    if (propagateThread == nullptr)
+    if (propagateThread == nullptr){
+      std::cerr << "Space(impl) createPropagateThreadOnceAndSuspendItOnVar" << std::endl;
       propagateThread = new (vm) internal::DummyThread(vm, this, true);
+    }
     propagateThread->suspendOnVar(vm, variable);
   }
 }
