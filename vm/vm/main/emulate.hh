@@ -193,6 +193,25 @@ private:
  */
 class Thread : public Runnable {
 private:
+  // Hack: static pointer used to debug this thread if it is the same as
+  //       _debugThread
+  static Thread* _debugThread;
+public:
+  static void setDebugThread(Thread* thr) { _debugThread = thr; }
+  bool amIDebugThread() { return this == _debugThread; }
+  void debugIfIsDebugThread(bool end) {
+    if(amIDebugThread()) {
+      if(!end) {
+        std::cerr << "------------------------\n";
+        std::cerr << "Before execution" << std::endl;
+      }
+      dump();
+      if (end) {
+        std::cerr << "------------------------\n";
+      }
+    }
+  }
+private:
   typedef Runnable Super;
 
   static constexpr size_t InitXRegisters = 64;

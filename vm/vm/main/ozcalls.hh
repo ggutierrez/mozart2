@@ -25,6 +25,7 @@
 #ifndef MOZART_OZCALLS_H
 #define MOZART_OZCALLS_H
 
+#include <iostream>
 #include "mozartcore.hh"
 #include "emulate.hh"
 
@@ -230,6 +231,18 @@ struct OutputProcessing<inputIdx, outputIdx, nullable<T&>&, Tail...>
 void asyncOzCall(VM vm, Space* space, RichNode callable) {
   new (vm) Thread(vm, space, callable, 0, nullptr);
 }
+
+  template <typename... Args>
+  Thread* asyncOzCallForNewSpace(VM vm, Space* space, RichNode callable, Args&&... args) {
+    constexpr size_t argc = sizeof...(args);
+    
+    UnstableNode unstableArgs[argc];
+    RichNode arguments[argc];
+    internal::initInputArguments<false>(
+                                        vm, unstableArgs, arguments, std::forward<Args>(args)...);
+    
+    return new (vm) Thread(vm, space, callable, argc, arguments);
+  }
 
 template <typename... Args>
 void asyncOzCall(VM vm, Space* space, RichNode callable, Args&&... args) {

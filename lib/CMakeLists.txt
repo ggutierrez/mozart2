@@ -68,6 +68,12 @@ set(STAGE_0_BASE_OZF "${STAGE_0_CACHE}/Base.ozf")
 set(STAGE_0_INIT_OZF "${STAGE_0_CACHE}/Init.ozf")
 set(STAGE_0_SEARCH_LOAD "cache=${STAGE_0_CACHE}")
 
+## ME!!
+file(WRITE /tmp/outxcode.txt "STAGE_0_CACHE: ${STAGE_0_CACHE}")
+file(APPEND /tmp/outxcode.txt "STAGE_0_INIT_OZF: ${STAGE_0_INIT_OZF}")
+## ME!!
+
+
 file(MAKE_DIRECTORY "${STAGE_0_CACHE_SYSTEM}")
 
 find_package(Java COMPONENTS Runtime REQUIRED)
@@ -139,6 +145,9 @@ file(MAKE_DIRECTORY "${STAGE_1_CACHE_SYSTEM}")
 set(STAGE_1_BASE_OZF "${STAGE_1_CACHE}/Base.ozf")
 set(STAGE_1_RUNTIME_OZF "${STAGE_1_CACHE_SYSTEM}/RunTime.ozf")
 set(FINAL_INIT_OZF "${CMAKE_CURRENT_BINARY_DIR}/Init.ozf")
+
+# file(APPEND /tmp/xcodelog.txt "Fooo ${STAGE_0_INIT_OZF}")
+file(APPEND /tmp/xcodelog.txt "Fooo ${MOZART_BUILD_DIR}")
 
 add_custom_command(
   OUTPUT "${STAGE_1_BASE_OZF}"
