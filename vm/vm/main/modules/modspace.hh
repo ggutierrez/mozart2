@@ -48,10 +48,14 @@ public:
     static void call(VM vm, In target, Out result) {
       // Create the space
       Space* space = new (vm) Space(vm, vm->getCurrentSpace());
+      
+      std::cerr << "Impl(Space.new) created space: " << space << std::endl;
 
       // Create the thread {Proc Root}
       ozcalls::asyncOzCall(vm, space, target, *space->getRootVar());
-
+      
+      std::cerr << "Impl(Space.new) finished\n";
+      
       // Create the reification of the space
       result = ReifiedSpace::build(vm, space);
     }

@@ -69,7 +69,11 @@ VirtualMachine::run_return_type VirtualMachine::run() {
     // Run the thread
     assert(currentThread->isRunnable());
     _currentThread = currentThread;
+    
+    Thread* cthr = static_cast<Thread*>(currentThread);
+    Thread::debugIfSameAs(cthr, "Before run");
     currentThread->run();
+    Thread::debugIfSameAs(cthr, "After run");
     _currentThread = nullptr;
 
     // Schedule the thread anew if it is still runnable

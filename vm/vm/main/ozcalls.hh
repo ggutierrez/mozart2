@@ -25,6 +25,7 @@
 #ifndef MOZART_OZCALLS_H
 #define MOZART_OZCALLS_H
 
+#include <iostream>
 #include "mozartcore.hh"
 #include "emulate.hh"
 
@@ -240,7 +241,10 @@ void asyncOzCall(VM vm, Space* space, RichNode callable, Args&&... args) {
   internal::initInputArguments<false>(
     vm, unstableArgs, arguments, std::forward<Args>(args)...);
 
-  new (vm) Thread(vm, space, callable, argc, arguments);
+  Thread *t = new (vm) Thread(vm, space, callable, argc, arguments);
+  std::cerr << "asyncOzCall\n";
+  t->dump();
+  Thread::setDebugThread(t);
 }
 
 template <typename... Args>

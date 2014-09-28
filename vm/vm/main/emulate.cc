@@ -236,6 +236,8 @@ UnstableNode ThreadStack::buildStackTrace(VM vm, StableNode* abstraction,
 
 constexpr size_t Thread::InitXRegisters;
 
+Thread* Thread::_debugThread = nullptr;
+  
 Thread::Thread(VM vm, Space* space, RichNode abstraction,
                bool createSuspended): Runnable(vm, space) {
   constructor(vm, abstraction, 0, nullptr, createSuspended);
@@ -1644,8 +1646,8 @@ void Thread::terminate() {
 
 void Thread::dump() {
   std::cerr << "Thread " << this << ", runnable:" << isRunnable() << std::endl;
-  UnstableNode stackTrace = stack.buildStackTrace(vm, nullptr, nullptr, DebugEntry());
-  std::cerr << repr(vm, stackTrace) << std::endl;
+//  UnstableNode stackTrace = stack.buildStackTrace(vm, nullptr, nullptr, DebugEntry());
+//  std::cerr << repr(vm, stackTrace) << std::endl;
 }
 
 }
