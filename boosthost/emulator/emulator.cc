@@ -264,7 +264,7 @@ int main(int argc, char** argv) {
 
   // Hacky way to guess if we are in a build setting
   fs::path appPath = executablePath.parent_path();
-  bool isBuildSetting = appPath.filename() == PATH_LIT("emulator");
+  bool isBuildSetting = appPath.string().find("emulator") != std::string::npos;  
 
   if (ozHome.empty()) {
     if (isBuildSetting)
