@@ -66,7 +66,9 @@ public:
       std::cerr << "Impl(Space.new) created space: " << space << std::endl;
 
       // Create the thread {Proc Root}
-      ozcalls::asyncOzCall(vm, space, target, *space->getRootVar());
+      Thread *t = ozcalls::asyncOzCallForNewSpace(vm, space, target, *space->getRootVar());
+      Thread::setDebugThread(t);
+      t->dump();
       space->dumpStabilityInf();
       
       std::cerr << "Impl(Space.new) finished\n";

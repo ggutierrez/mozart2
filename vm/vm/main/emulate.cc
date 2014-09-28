@@ -310,10 +310,6 @@ Thread::Thread(GR gr, Thread& from): Runnable(gr, from) {
 
 void Thread::run() {
   // Local variable cache of fields
-
-  if (amIDebugThread()) {
-    std::cerr << "Thread(impl) run when I am debugThread" << std::endl;
-  }
   VM const vm = this->vm;
   XRegArray* const xregs = &this->xregs;
 
@@ -326,6 +322,11 @@ void Thread::run() {
   StaticArray<StableNode> gregs;
   StaticArray<StableNode> kregs;
   DebugEntry debugEntry;
+
+  
+  if (amIDebugThread()) {
+    std::cerr << "Thread(impl) run when I am debugThread" << std::endl;
+  }
 
   popFrame(vm, abstraction, PC, yregCount, yregs, gregs, kregs, debugEntry);
 
@@ -354,6 +355,10 @@ void Thread::run() {
   // The big try-catch that catches all bad things in the world
   MOZART_TRY(vm) {
 
+    if (amIDebugThread()) {
+      std::cerr << "Thread(impl)  (I am debugThread) MOZART_TRY" << std::endl;
+    }
+    
     // Now's the right time to inject an exception that was thrown at us
 
     if (injectedException != nullptr) {
@@ -1207,11 +1212,19 @@ void Thread::run() {
   // The big catches clauses that catch all bad things in the world
 
   } MOZART_CATCH(vm, kind, node) {
+    
+    if (amIDebugThread()) {
+      std::cerr << "Thread(impl) (I am debugThread) at MOZART_CATCH" << std::endl;
+    }
+
     if (hasBackupPC)
       PC = backupPC;
 
     switch (kind) {
       case ExceptionKind::ekFail: {
+        if (amIDebugThread()) {
+          std::cerr << "Thread(impl) (I am debugThread) MOZART_CATCH-ekFail" << std::endl;
+        }
         applyFail(vm, *node,
                   abstraction, PC, yregCount, xregs, yregs, gregs, kregs,
                   std::move(debugEntry));
@@ -1219,6 +1232,9 @@ void Thread::run() {
       }
 
       case ExceptionKind::ekWaitBefore: {
+        if (amIDebugThread()) {
+          std::cerr << "Thread(impl) (I am debugThread) at MOZART_CATCH-ekWaitBefore" << std::endl;
+        }
         applyWaitBefore(vm, *node, false,
                         abstraction, PC, yregCount, xregs, yregs, gregs, kregs,
                         std::move(debugEntry));
@@ -1226,6 +1242,9 @@ void Thread::run() {
       }
 
       case ExceptionKind::ekWaitQuietBefore: {
+        if (amIDebugThread()) {
+          std::cerr << "Thread(impl) (I am debugThread) at MOZART_CATCH-ekWaitQuietBefore" << std::endl;
+        }
         applyWaitBefore(vm, *node, true,
                         abstraction, PC, yregCount, xregs, yregs, gregs, kregs,
                         std::move(debugEntry));
@@ -1233,9 +1252,12 @@ void Thread::run() {
       }
 
       case ExceptionKind::ekRaise: {
+        if (amIDebugThread()) {
+          std::cerr << "Thread(impl) (I am debugThread) at MOZART_CATCH-ekRise" << std::endl;
+        }
         applyRaise(vm, *node,
                    abstraction, PC, yregCount, xregs, yregs, gregs, kregs,
-                   std::move(debugEntry));
+                   std::move(debugEntry));    
         break;
       }
     }

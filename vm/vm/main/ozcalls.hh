@@ -232,6 +232,18 @@ void asyncOzCall(VM vm, Space* space, RichNode callable) {
   new (vm) Thread(vm, space, callable, 0, nullptr);
 }
 
+  template <typename... Args>
+  Thread* asyncOzCallForNewSpace(VM vm, Space* space, RichNode callable, Args&&... args) {
+    constexpr size_t argc = sizeof...(args);
+    
+    UnstableNode unstableArgs[argc];
+    RichNode arguments[argc];
+    internal::initInputArguments<false>(
+                                        vm, unstableArgs, arguments, std::forward<Args>(args)...);
+    
+    return new (vm) Thread(vm, space, callable, argc, arguments);
+  }
+
 template <typename... Args>
 void asyncOzCall(VM vm, Space* space, RichNode callable, Args&&... args) {
   constexpr size_t argc = sizeof...(args);
@@ -241,10 +253,7 @@ void asyncOzCall(VM vm, Space* space, RichNode callable, Args&&... args) {
   internal::initInputArguments<false>(
     vm, unstableArgs, arguments, std::forward<Args>(args)...);
 
-  Thread *t = new (vm) Thread(vm, space, callable, argc, arguments);
-  std::cerr << "asyncOzCall\n";
-  t->dump();
-  Thread::setDebugThread(t);
+  new (vm) Thread(vm, space, callable, argc, arguments);
 }
 
 template <typename... Args>
