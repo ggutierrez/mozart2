@@ -229,6 +229,10 @@ public:
     return _currentThread;
   }
 
+  void debugCurrrentThreadIfDebugThread(const char* prepend);
+  
+  bool isCurrentThreadDebugthread(void);
+  
   bool isOnTopLevel() {
     return _isOnTopLevel;
   }

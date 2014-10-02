@@ -30,6 +30,24 @@ namespace mozart {
 // VirtualMachine //
 ////////////////////
 
+  void VirtualMachine::debugCurrrentThreadIfDebugThread(const char* prepend) {
+    Thread* ct = static_cast<Thread*>(getCurrentThread());
+    if(!ct){
+      std::cerr << "VM(impl) debugCurrentThread: Current thread is null" << std::endl;
+      return;
+    }
+    if (ct->amIDebugThread()){
+      std::cerr << prepend << "### ";
+      ct->dump();
+    }
+  }
+  
+  bool VirtualMachine::isCurrentThreadDebugthread() {
+    Thread* ct = static_cast<Thread*>(getCurrentThread());
+    if(!ct) return false;
+    return ct->amIDebugThread();
+  }
+  
 VirtualMachine::run_return_type VirtualMachine::run() {
   while (!(testAndClearExitRunRequested() ||
       (_envUseDynamicPreemption && environment.testDynamicExitRun()))) {

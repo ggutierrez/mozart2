@@ -368,8 +368,14 @@ void Thread::run() {
     }
 
     // The big loop
-
+    int loopIteration = 0;
     while (!preempted) {
+      
+      if (amIDebugThread()) {
+        std::cerr << "Thread(impl)  (I am debugThread) OPCODE_LOOP " << loopIteration << std::endl;
+        loopIteration++;
+      }
+      
       OpCode op = *PC;
 
       switch (op) {
@@ -518,14 +524,29 @@ void Thread::run() {
         // Control
 
         case OpCallBuiltin0: {
+          if (amIDebugThread()) {
+            std::cerr << "Thread(impl)  (I am debugThread) OpCallBuiltin0"
+                      << std::endl;
+          }
           BuiltinCallable(KPC(1)).callBuiltin(vm);
           advancePC(1);
+          if (amIDebugThread()) {
+            std::cerr << "Thread(impl)  (I am debugThread) OpCallBuiltin0-end"
+            << std::endl;
+          }
           break;
         }
 
         case OpCallBuiltin1: {
+          if (amIDebugThread()) {
+            std::cerr << "Thread(impl)  (I am debugThread) OpCallBuiltin1" << std::endl;
+          }
           BuiltinCallable(KPC(1)).callBuiltin(vm, XPC(2));
           advancePC(2);
+          if (amIDebugThread()) {
+            this->dump();
+            std::cerr << "Thread(impl)  (I am debugThread) OpCallBuiltin1-end" << std::endl;
+          }
           break;
         }
 
