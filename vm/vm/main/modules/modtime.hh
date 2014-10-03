@@ -48,6 +48,7 @@ public:
     Alarm(): Builtin("alarm") {}
 
     static void call(VM vm, In delay, Out result) {
+      std::cerr << "time.alram called\n";
       auto intDelay = getArgument<nativeint>(vm, delay, "integer");
 
       if (intDelay <= 0) {

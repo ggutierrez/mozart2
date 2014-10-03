@@ -25,6 +25,8 @@
 #ifndef MOZART_VM_H
 #define MOZART_VM_H
 
+#include <string>
+
 #include "mozartcore.hh"
 
 #ifndef MOZART_GENERATOR
@@ -157,6 +159,10 @@ UUID VirtualMachine::genUUID() {
 }
 
 void VirtualMachine::setAlarm(std::int64_t delay, StableNode* wakeable) {
+  RichNode rn(*wakeable);
+  std::string msg("Alarm on ");
+  msg.append(rn.toDebugString());
+  std::cerr << "Added alarm on " << msg << "\n";
   std::int64_t expiration = getReferenceTime() + delay;
 
   auto iter = _alarms.removable_begin();

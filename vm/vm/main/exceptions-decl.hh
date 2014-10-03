@@ -26,6 +26,7 @@
 #define MOZART_EXCEPTIONS_DECL_H
 
 #include <setjmp.h>
+#include <iostream>
 
 #include "core-forward-decl.hh"
 #include "store-decl.hh"
@@ -71,6 +72,7 @@ public:
     ExceptionHandler* handler = _topHandler;
     assert(handler != nullptr);
     _topHandler = handler->nextHandler;
+    std::cerr << "Called rethrow\n";
     longjmp(handler->jumpBuffer, 1);
   }
 

@@ -58,6 +58,9 @@ void BuiltinProcedure::callBuiltin(VM vm, size_t argc, UnstableNode* args[]) {
 template <class... Args>
 void BuiltinProcedure::callBuiltin(VM vm, Args&&... args) {
   assert(sizeof...(args) == getArity());
+  if(vm->isCurrentThreadDebugthread()){
+    std::cerr << "Before calling built-in with name: " << getPrintName(vm).contents() << std::endl;
+  }
   return _builtin->callBuiltin(vm, std::forward<Args>(args)...);
 }
 

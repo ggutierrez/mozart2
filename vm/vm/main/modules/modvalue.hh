@@ -25,6 +25,8 @@
 #ifndef MOZART_MODVALUE_H
 #define MOZART_MODVALUE_H
 
+#include <iostream>
+
 #include "../mozartcore.hh"
 
 #ifndef MOZART_GENERATOR
@@ -198,8 +200,13 @@ public:
     Wait(): Builtin("wait") {}
 
     static void call(VM vm, In value) {
-      if (value.isTransient())
+      std::cerr << "Called Value.wait\n";
+      if (value.isTransient()) {
+        std::string msg("Makes no sense!!: ");
+        msg.append(value.toDebugString());
+        vm->debugCurrrentThreadIfDebugThread(msg.c_str());
         waitFor(vm, value);
+      }
     }
   };
 

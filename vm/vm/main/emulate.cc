@@ -539,7 +539,7 @@ void Thread::run() {
 
         case OpCallBuiltin1: {
           if (amIDebugThread()) {
-            std::cerr << "Thread(impl)  (I am debugThread) OpCallBuiltin1" << std::endl;
+            std::cerr << "Thread(impl)  OpCallBuiltin1" << std::endl;
           }
           BuiltinCallable(KPC(1)).callBuiltin(vm, XPC(2));
           advancePC(2);
